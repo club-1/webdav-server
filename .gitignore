@@ -1,0 +1,5 @@
+# PHP files
+/vendor
+
+# IDE files
+/.vscode

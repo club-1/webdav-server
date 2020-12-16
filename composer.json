@@ -1,0 +1,15 @@
+{
+    "name": "club-1/webdav-server",
+    "description": "WebDav server of CLUB1",
+    "type": "project",
+    "require": {
+        "sabre/dav": "^4.1"
+    },
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Nicolas Peugnet",
+            "email": "n.peugnet@free.fr"
+        }
+    ]
+}
