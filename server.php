@@ -40,7 +40,7 @@ foreach (glob($sqlfiles) as $file) {
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@club1.fr','$user');");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-read', null, null);");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-write', null, null);");
-$pdo->exec("INSERT INTO users (username,digesta1) VALUES ('$user', '87fd274b7b6c01e48d7c2f965da8ddf7');");
+$pdo->exec("INSERT OR IGNORE INTO users (username,digesta1) VALUES ('$user', '87fd274b7b6c01e48d7c2f965da8ddf7');");
 // Backends
 $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
