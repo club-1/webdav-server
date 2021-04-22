@@ -1,6 +1,14 @@
-# Club1 webdav server
+# Unix webdav server
+
+_Part of the [unix-cloud](https://github.com/club-1/unix-cloud) project._
+
+A fully featured webdav server integrated with unix users and mainly based on [Sabre/DAV](https://github.com/sabre-io/dav).
+
+It is also dependant on [PHP-FPM](https://www.php.net/manual/en/install.fpm.php) which allows to easily have one process per user with the correct ownership.
 
 ## Setup
+
+_Using Apache and LDAP auth for now._
 
 ### Prepare
 
