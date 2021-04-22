@@ -12,7 +12,7 @@ $user = $_SERVER['AUTHENTICATE_UID'];
 $home = "/home/$user";
 $vardir = "$home/var";
 $sqlitedb = "$vardir/webdav.sqlite";
-$sqlfiles = __DIR__ . 'sql/*';
+$sqlfiles = 'sql/*';
 
 /*************************** Setup ****************************/
 
