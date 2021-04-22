@@ -12,7 +12,7 @@ vendor: composer.lock composer.json
 $(destsql): sql/%: $(srcdir)/% | sql vendor Makefile
 	sed -E $< \
 		-e 's/(CREATE [A-Z]+)/\1 IF NOT EXISTS/' \
-		-e 's/(INSERT)/\1 IGNORE/' \
+		-e 's/(INSERT)/\1 OR IGNORE/' \
 		> $@
 
 sql:
