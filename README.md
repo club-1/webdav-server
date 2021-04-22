@@ -2,10 +2,10 @@
 
 ## Setup
 
-### Dependencies
+### Prepare
 
-1. Debian: `sudo apt install apache2 php-fpm composer`
-2. PHP: `composer install`
+1. Debian dependencies: `sudo apt install apache2 php-fpm composer`
+2. Build all: `make`
 
 ### Apache vhost
 

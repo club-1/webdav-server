@@ -1,4 +1,5 @@
 # APP files
+/sql
 /vendor
 
 # IDE files
