@@ -1,15 +1,15 @@
-sqldbs  := calendars locks principals users
+sqldbs  := addressbooks calendars locks principals propertystorage users
 srcdir  := vendor/sabre/dav/examples/sql
 srcsql  := $(sqldbs:%=$(srcdir)/sqlite.%.sql)
 destsql := $(srcsql:$(srcdir)/%=sql/%)
 
-all: vendor sqlitedb.sql
+all: vendor sql/sqlite.full.sql
 
 vendor: composer.lock composer.json
 	composer install
 	@touch $@
 
-sqlitedb.sql: $(destsql)
+sql/sqlite.full.sql: $(destsql) | sql
 	cat $^ > $@
 
 $(destsql): sql/%: $(srcdir)/% | sql vendor

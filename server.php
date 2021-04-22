@@ -1,6 +1,7 @@
 <?php
 
 use Sabre\CalDAV;
+use Sabre\CardDAV;
 use Sabre\DAV;
 use Sabre\DAVACL;
 
@@ -8,11 +9,12 @@ require_once 'vendor/autoload.php';
 
 /************************* Parameters *************************/
 
+$host     = 'club1.fr';
 $user     = $_SERVER['AUTHENTICATE_UID'];
 $home     = "/home/$user";
 $vardir   = "$home/var";
 $sqlitedb = "$vardir/webdav.sqlite";
-$dbsql    = 'sqlitedb.sql';
+$dbsql    = 'sql/sqlite.full.sql';
 
 /*************************** Setup ****************************/
 
@@ -35,19 +37,25 @@ $pdo = new PDO("sqlite:$sqlitedb");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // Init database
 $pdo->exec(file_get_contents($dbsql));
-$pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@club1.fr','$user');");
+$pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@$host','$user');");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-read', null, null);");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-write', null, null);");
 $pdo->exec("INSERT OR IGNORE INTO users (username,digesta1) VALUES ('$user', '87fd274b7b6c01e48d7c2f965da8ddf7');");
+$pdo->exec("INSERT OR IGNORE INTO addressbooks (principaluri, displayname, uri, description, synctoken) VALUES ('principals/$user','default','default','','1');");
+
 // Backends
-$calendarBackend = new CalDAV\Backend\PDO($pdo);
+$authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
+$lockBackend = new DAV\Locks\Backend\PDO($pdo);
 $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
+$calendarBackend = new CalDAV\Backend\PDO($pdo);
+$carddavBackend = new CardDAV\Backend\PDO($pdo);
 
 // Directory structure
 $tree = [
     new CalDAV\Principal\Collection($principalBackend),
     new CalDAV\CalendarRoot($principalBackend, $calendarBackend),
-    $root = new DAV\FS\Directory($home, 'files'),
+    new CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
+    new DAV\FS\Directory($home, 'files'),
 ];
 
 $server = new DAV\Server($tree);
@@ -55,35 +63,32 @@ $server->setBaseUri('/');
 
 /********************** General Plugins ***********************/
 
-// Let apache manage the auth.
-$authBackend = new DAV\Auth\Backend\Apache();
-$authPlugin = new DAV\Auth\Plugin($authBackend);
-$server->addPlugin($authPlugin);
+// Auth plugin
+$server->addPlugin(new DAV\Auth\Plugin($authBackend));
 
 // WebDAV-Sync plugin
 $server->addPlugin(new DAV\Sync\Plugin());
+
+// Sharing
+$server->addPlugin(new DAV\Sharing\Plugin());
 
 // Access control list plugin
 $server->addPlugin(new DAVACL\Plugin());
 
 // Support for html frontend
-$browser = new DAV\Browser\Plugin();
-$server->addPlugin($browser);
+$server->addPlugin(new DAV\Browser\Plugin());
 
 /************************ File Plugins ************************/
 
 // The lock manager is reponsible for making sure users don't overwrite
 // each others changes.
-$lockBackend = new DAV\Locks\Backend\PDO($pdo);
-$lockPlugin = new DAV\Locks\Plugin($lockBackend);
-$server->addPlugin($lockPlugin);
+$server->addPlugin(new DAV\Locks\Plugin($lockBackend));
 
 // Automatically guess (some) contenttypes, based on extension
 $server->addPlugin(new DAV\Browser\GuessContentType());
 
 // Temporary file filter
-$tempFF = new DAV\TemporaryFileFilterPlugin($vardir);
-$server->addPlugin($tempFF);
+$server->addPlugin(new DAV\TemporaryFileFilterPlugin($vardir));
 
 /********************** Calendar Plugins **********************/
 
@@ -97,8 +102,18 @@ $server->addPlugin(new CalDAV\Subscriptions\Plugin());
 $server->addPlugin(new CalDAV\Schedule\Plugin());
 
 // CalDAV Sharing support
-$server->addPlugin(new DAV\Sharing\Plugin());
 $server->addPlugin(new CalDAV\SharingPlugin());
+
+// Export
+$server->addPlugin(new \Sabre\CalDAV\ICSExportPlugin());
+
+/******************** Addressbook Plugins *********************/
+
+// CardDAV support
+$server->addPlugin(new \Sabre\CardDAV\Plugin());
+
+// Export
+$server->addPlugin(new \Sabre\CardDAV\VCFExportPlugin());
 
 /************************ Start server ************************/
 
