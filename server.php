@@ -41,7 +41,6 @@ $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('pr
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-read', null, null);");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-write', null, null);");
 $pdo->exec("INSERT OR IGNORE INTO users (username,digesta1) VALUES ('$user', '87fd274b7b6c01e48d7c2f965da8ddf7');");
-$pdo->exec("INSERT OR IGNORE INTO addressbooks (principaluri, displayname, uri, description, synctoken) VALUES ('principals/$user','default','default','','1');");
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
@@ -49,6 +48,14 @@ $lockBackend = new DAV\Locks\Backend\PDO($pdo);
 $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
 $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $carddavBackend = new CardDAV\Backend\PDO($pdo);
+
+// default entries
+if (count($calendarBackend->getCalendarsForUser("principal/$user")) == 0) {
+    $calendarBackend->createCalendar("principal/$user", 'default', []);
+}
+if (count($carddavBackend->getAddressBooksForUser("principal/$user")) == 0) {
+    $carddavBackend->createAddressBook("principal/$user", 'default', []);
+}
 
 // Directory structure
 $tree = [
