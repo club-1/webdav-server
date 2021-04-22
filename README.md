@@ -13,3 +13,8 @@
 2. enable ldap modules: `sudo a2enmod ldap authnz_ldap`
 3. enable vhost: `sudo a2ensite vhost.conf`
 3. reload apache: `sudo systemctl reload apache2`
+
+### PHP FPM pools
+
+1. for each user, create a pool based on `fpm-pool.conf`
+2. reload fpm: `sudo systemctl reload php7.4-fpm`

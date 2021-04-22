@@ -2,11 +2,7 @@
 
 use Sabre\DAV;
 
-require 'vendor/autoload.php';
-
-$user = $_SERVER['AUTHENTICATE_UID'];
-$home = "/home/$user";
-$vardir = "$home/var/";
+require_once 'base.php';
 
 // Directory structure
 $root = new DAV\FS\Directory($home);
@@ -37,10 +33,10 @@ $lockPlugin = new DAV\Locks\Plugin($lockBackend);
 $server->addPlugin($lockPlugin);
 
 // Automatically guess (some) contenttypes, based on extension
-$server->addPlugin(new \Sabre\DAV\Browser\GuessContentType());
+$server->addPlugin(new DAV\Browser\GuessContentType());
 
 // Temporary file filter
-$tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin($vardir);
+$tempFF = new DAV\TemporaryFileFilterPlugin($vardir);
 $server->addPlugin($tempFF);
 
 /************************ Start server ************************/
