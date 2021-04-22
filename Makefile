@@ -3,13 +3,16 @@ srcdir  := vendor/sabre/dav/examples/sql
 srcsql  := $(sqldbs:%=$(srcdir)/sqlite.%.sql)
 destsql := $(srcsql:$(srcdir)/%=sql/%)
 
-all: vendor $(destsql)
+all: vendor sqlitedb.sql
 
 vendor: composer.lock composer.json
 	composer install
 	@touch $@
 
-$(destsql): sql/%: $(srcdir)/% Makefile | sql vendor
+sqlitedb.sql: $(destsql)
+	cat $^ > $@
+
+$(destsql): sql/%: $(srcdir)/% | sql vendor
 	sed -E $< \
 	-e 's/(CREATE [A-Z]+)/\1 IF NOT EXISTS/' \
 	-e '/INSERT/,/;$$/d' \

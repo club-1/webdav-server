@@ -8,11 +8,11 @@ require_once 'vendor/autoload.php';
 
 /************************* Parameters *************************/
 
-$user = $_SERVER['AUTHENTICATE_UID'];
-$home = "/home/$user";
-$vardir = "$home/var";
+$user     = $_SERVER['AUTHENTICATE_UID'];
+$home     = "/home/$user";
+$vardir   = "$home/var";
 $sqlitedb = "$vardir/webdav.sqlite";
-$sqlfiles = 'sql/*';
+$dbsql    = 'sqlitedb.sql';
 
 /*************************** Setup ****************************/
 
@@ -34,9 +34,7 @@ date_default_timezone_set('Europe/Paris');
 $pdo = new PDO("sqlite:$sqlitedb");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // Init database
-foreach (glob($sqlfiles) as $file) {
-    $pdo->exec(file_get_contents($file));
-}
+$pdo->exec(file_get_contents($dbsql));
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@club1.fr','$user');");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-read', null, null);");
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-write', null, null);");

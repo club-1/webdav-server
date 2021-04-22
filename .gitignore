@@ -1,6 +1,7 @@
 # APP files
 /sql
 /vendor
+*.sql
 
 # IDE files
 /.vscode
