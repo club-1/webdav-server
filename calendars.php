@@ -16,7 +16,6 @@ $pdo = new PDO("sqlite:$vardir/calendars.sqlite");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Backends
-$authBackend = new DAV\Auth\Backend\PDO($pdo);
 $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
 
@@ -31,7 +30,7 @@ $server = new DAV\Server($tree);
 $server->setBaseUri('/calendars');
 
 // Server Plugins
-$server->addPlugin(new DAV\Auth\Plugin($authBackend));
+$server->addPlugin($authPlugin);
 
 $server->addPlugin(new DAVACL\Plugin());
 

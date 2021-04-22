@@ -11,10 +11,6 @@ $server = new DAV\Server($root);
 $server->setBaseUri('/files');
 
 /************************ General Plugins ************************/
-
-// Let apache manage the auth.
-$authBackend = new DAV\Auth\Backend\Apache();
-$authPlugin = new DAV\Auth\Plugin($authBackend);
 $server->addPlugin($authPlugin);
 
 /* WebDAV-Sync plugin */
