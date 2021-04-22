@@ -6,7 +6,7 @@ require 'vendor/autoload.php';
 
 $user = $_SERVER['AUTHENTICATE_UID'];
 $home = "/home/$user";
-$datadir = "webdav";
+$vardir = "$home/var/";
 
 // Directory structure
 $root = new DAV\FS\Directory($home);
@@ -32,9 +32,16 @@ $server->addPlugin($browser);
 
 // The lock manager is reponsible for making sure users don't overwrite
 // each others changes.
-$lockBackend = new DAV\Locks\Backend\File("$datadir/locks");
+$lockBackend = new DAV\Locks\Backend\File("$vardir/locks");
 $lockPlugin = new DAV\Locks\Plugin($lockBackend);
 $server->addPlugin($lockPlugin);
+
+// Automatically guess (some) contenttypes, based on extension
+$server->addPlugin(new \Sabre\DAV\Browser\GuessContentType());
+
+// Temporary file filter
+$tempFF = new \Sabre\DAV\TemporaryFileFilterPlugin($vardir);
+$server->addPlugin($tempFF);
 
 /************************ Start server ************************/
 
