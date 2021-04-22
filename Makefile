@@ -9,8 +9,11 @@ vendor: composer.lock composer.json
 	composer install
 	touch $@
 
-$(destsql): sql/%: $(srcdir)/% | sql vendor
-	sed -E $< -e 's/(CREATE [A-Z]+)/\1 IF NOT EXISTS/' > $@
+$(destsql): sql/%: $(srcdir)/% | sql vendor Makefile
+	sed -E $< \
+		-e 's/(CREATE [A-Z]+)/\1 IF NOT EXISTS/' \
+		-e 's/(INSERT)/\1 IGNORE/' \
+		> $@
 
 sql:
 	mkdir $@
