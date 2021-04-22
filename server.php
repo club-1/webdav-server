@@ -50,11 +50,11 @@ $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $carddavBackend = new CardDAV\Backend\PDO($pdo);
 
 // default entries
-if (count($calendarBackend->getCalendarsForUser("principal/$user")) == 0) {
-    $calendarBackend->createCalendar("principal/$user", 'default', []);
+if (count($calendarBackend->getCalendarsForUser("principals/$user")) == 0) {
+    $calendarBackend->createCalendar("principals/$user", 'default', []);
 }
-if (count($carddavBackend->getAddressBooksForUser("principal/$user")) == 0) {
-    $carddavBackend->createAddressBook("principal/$user", 'default', []);
+if (count($carddavBackend->getAddressBooksForUser("principals/$user")) == 0) {
+    $carddavBackend->createAddressBook("principals/$user", 'default', []);
 }
 
 // Directory structure
