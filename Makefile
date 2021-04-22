@@ -7,13 +7,13 @@ all: vendor $(destsql)
 
 vendor: composer.lock composer.json
 	composer install
-	touch $@
+	@touch $@
 
-$(destsql): sql/%: $(srcdir)/% | sql vendor Makefile
+$(destsql): sql/%: $(srcdir)/% Makefile | sql vendor
 	sed -E $< \
-		-e 's/(CREATE [A-Z]+)/\1 IF NOT EXISTS/' \
-		-e 's/(INSERT)/\1 OR IGNORE/' \
-		> $@
+	-e 's/(CREATE [A-Z]+)/\1 IF NOT EXISTS/' \
+	-e '/INSERT/,/;$$/d' \
+	> $@
 
 sql:
 	mkdir $@
