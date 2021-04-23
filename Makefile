@@ -1,4 +1,4 @@
-sqldbs  := addressbooks calendars locks principals propertystorage users
+sqldbs  := addressbooks calendars locks principals propertystorage
 srcdir  := vendor/sabre/dav/examples/sql
 srcsql  := $(sqldbs:%=$(srcdir)/sqlite.%.sql)
 destsql := $(srcsql:$(srcdir)/%=sql/%)
@@ -23,6 +23,8 @@ sql:
 
 clean:
 	rm -rf sql
+
+cleanall: clean
 	rm -rf vendor
 
-.PHONY: all clean
+.PHONY: all clean cleanall

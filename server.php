@@ -38,9 +38,6 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // Init database
 $pdo->exec(file_get_contents($dbsql));
 $pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@$host','$user');");
-$pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-read', null, null);");
-$pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-write', null, null);");
-$pdo->exec("INSERT OR IGNORE INTO users (username,digesta1) VALUES ('$user', '87fd274b7b6c01e48d7c2f965da8ddf7');");
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
