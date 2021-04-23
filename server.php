@@ -48,10 +48,10 @@ $carddavBackend = new CardDAV\Backend\PDO($pdo);
 
 // default entries
 if (count($calendarBackend->getCalendarsForUser("principals/$user")) == 0) {
-    $calendarBackend->createCalendar("principals/$user", 'default', []);
+    $calendarBackend->createCalendar("principals/$user", 'default', ['{DAV:}displayname' => 'Default']);
 }
 if (count($carddavBackend->getAddressBooksForUser("principals/$user")) == 0) {
-    $carddavBackend->createAddressBook("principals/$user", 'default', []);
+    $carddavBackend->createAddressBook("principals/$user", 'default', ['{DAV:}displayname' => 'Default']);
 }
 
 // Directory structure
