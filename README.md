@@ -12,8 +12,12 @@ _Using Apache and LDAP auth for now._
 
 ### Prepare
 
-1. Debian dependencies: `sudo apt install apache2 php-fpm composer`
+1. Debian dependencies: `sudo apt install apache2 php-fpm php-pgsql composer`
 2. Build all: `make`
+
+### PosgreSQL database
+
+Run `sudo make setupdb`
 
 ### Apache vhost
 

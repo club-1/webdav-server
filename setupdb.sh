@@ -3,7 +3,6 @@
 USER=webdav
 DBNAME=webdav
 
-sudo -u postgres bash
-createuser --pwprompt $USER
-createdb $DBNAME --owner $USER
-psql -f sql/pgsql.full.sql $DBNAME
+sudo -u postgres createuser --pwprompt $USER
+sudo -u postgres createdb $DBNAME --owner $USER
+sudo -u postgres psql --host=localhost -U $USER -f sql/pgsql.full.sql $DBNAME
