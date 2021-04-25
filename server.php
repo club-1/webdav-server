@@ -6,15 +6,7 @@ use Sabre\DAV;
 use Sabre\DAVACL;
 
 require_once 'vendor/autoload.php';
-
-/************************* Parameters *************************/
-
-$host     = 'club1.fr';
-$user     = $_SERVER['AUTHENTICATE_UID'];
-$home     = "/home/$user";
-$vardir   = "$home/var";
-$sqlitedb = "$vardir/webdav.sqlite";
-$dbsql    = 'sql/sqlite.full.sql';
+require_once 'config.php';
 
 /*************************** Setup ****************************/
 
@@ -24,20 +16,12 @@ if (!file_exists($home)) {
 if (!is_dir($home)) {
     throw new RuntimeException("Home exists but is not a directory: '$home'", 2);
 }
-if (!file_exists($vardir)) {
-    mkdir($vardir);
-} elseif (!is_dir($vardir)) {
-    throw new RuntimeException("Var exists but is not a directory: '$vardir'", 3);
-}
 
 // settings
 date_default_timezone_set('Europe/Paris');
 
-$pdo = new PDO("sqlite:$sqlitedb");
+$pdo = new PDO($dbstring);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-// Init database
-$pdo->exec(file_get_contents($dbsql));
-$pdo->exec("INSERT OR IGNORE INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@$host','$user');");
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
@@ -46,7 +30,10 @@ $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
 $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $carddavBackend = new CardDAV\Backend\PDO($pdo);
 
-// default entries
+// Default entries
+$pdo->exec("INSERT INTO principals (uri,email,displayname) VALUES ('principals/$user', '$user@$host','$user') ON CONFLICT DO NOTHING;");
+$pdo->exec("INSERT INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-read', null, null) ON CONFLICT DO NOTHING;");
+$pdo->exec("INSERT INTO principals (uri,email,displayname) VALUES ('principals/$user/calendar-proxy-write', null, null) ON CONFLICT DO NOTHING;");
 if (count($calendarBackend->getCalendarsForUser("principals/$user")) == 0) {
     $calendarBackend->createCalendar("principals/$user", 'default', ['{DAV:}displayname' => 'Default']);
 }

@@ -1,15 +1,15 @@
 sqldbs  := addressbooks calendars locks principals propertystorage
 srcdir  := vendor/sabre/dav/examples/sql
-srcsql  := $(sqldbs:%=$(srcdir)/sqlite.%.sql)
+srcsql  := $(sqldbs:%=$(srcdir)/pgsql.%.sql)
 destsql := $(srcsql:$(srcdir)/%=sql/%)
 
-all: vendor sql/sqlite.full.sql
+all: vendor sql/pgsql.full.sql config.php
 
 vendor: composer.lock composer.json
 	composer install
 	@touch $@
 
-sql/sqlite.full.sql: $(destsql) | sql
+sql/pgsql.full.sql: $(destsql) | sql
 	cat $^ > $@
 
 $(destsql): sql/%: $(srcdir)/% | sql vendor
@@ -21,10 +21,17 @@ $(destsql): sql/%: $(srcdir)/% | sql vendor
 sql:
 	mkdir $@
 
+config.php:
+	cp config.sample.php $@
+
+setupdb: sql/pgsql.full.sql
+	./setupdb.sh
+
 clean:
 	rm -rf sql
-
-cleanall: clean
 	rm -rf vendor
 
-.PHONY: all clean cleanall
+cleanall: clean
+	rm -rf config.php
+
+.PHONY: all setupdb clean cleanall

@@ -1,6 +1,7 @@
 # APP files
 /sql
 /vendor
+config.php
 
 # IDE files
 /.vscode
