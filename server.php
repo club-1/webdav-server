@@ -79,7 +79,7 @@ $server->addPlugin(new DAV\Locks\Plugin($lockBackend));
 $server->addPlugin(new DAV\Browser\GuessContentType());
 
 // Temporary file filter
-$server->addPlugin(new DAV\TemporaryFileFilterPlugin($vardir));
+//$server->addPlugin(new DAV\TemporaryFileFilterPlugin($vardir));
 
 /********************** Calendar Plugins **********************/
 
