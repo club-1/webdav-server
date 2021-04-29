@@ -16,6 +16,7 @@ $(destsql): sql/%: $(srcdir)/% | sql vendor
 	sed -E $< \
 	-e 's/(CREATE [A-Z ]+)/\1IF NOT EXISTS /' \
 	-e '/INSERT/,/;$$/d' \
+	-e 's/BYTEA/TEXT/' \
 	> $@
 
 sql:
