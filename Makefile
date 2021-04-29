@@ -1,3 +1,8 @@
+# Database settings
+dbuser  ?= webdav_user
+dbname  ?= webdav
+
+pguser  := postgres
 sqldbs  := addressbooks calendars locks principals propertystorage
 srcdir  := vendor/sabre/dav/examples/sql
 srcsql  := $(sqldbs:%=$(srcdir)/pgsql.%.sql)
@@ -26,7 +31,9 @@ config.php:
 	cp config.sample.php $@
 
 setupdb: sql/pgsql.full.sql
-	./setupdb.sh
+	sudo -u $(pguser) createuser --pwprompt $(dbuser)
+	sudo -u $(pguser) createdb $(dbname) --owner $(dbuser) --encoding UTF8
+	sudo -u $(pguser) psql --host=localhost --user $(dbuser) -f sql/pgsql.full.sql $(dbname)
 
 clean:
 	rm -rf sql

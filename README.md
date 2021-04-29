@@ -17,7 +17,9 @@ _Using Apache and LDAP auth for now._
 
 ### PosgreSQL database
 
-Run `sudo make setupdb`
+```bash
+sudo make setupdb [dbuser=webdav_user] [dbname=webdav] [pguser=postgres]
+```
 
 ### Apache vhost
 
