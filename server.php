@@ -47,7 +47,9 @@ $tree = [
     new CalDAV\Principal\Collection($principalBackend),
     new CalDAV\CalendarRoot($principalBackend, $calendarBackend),
     new CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
-    new DAV\FS\Directory($home, 'files'),
+    new DAV\SimpleCollection('files', [
+        new DAV\FS\Directory($home),
+    ]),
 ];
 
 $server = new DAV\Server($tree);
