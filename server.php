@@ -6,6 +6,7 @@ use Sabre\DAV;
 use Sabre\DAVACL;
 
 require_once 'vendor/autoload.php';
+require_once 'PosixPropertiesPlugin.php';
 require_once 'config.php';
 
 /*************************** Setup ****************************/
@@ -78,6 +79,8 @@ $server->addPlugin(new DAV\Locks\Plugin($lockBackend));
 // Automatically guess (some) contenttypes, based on extension
 $server->addPlugin(new DAV\Browser\GuessContentType());
 
+// Add Posix properties to files
+$server->addPlugin(new PosixPropertiesPlugin());
 // Temporary file filter
 //$server->addPlugin(new DAV\TemporaryFileFilterPlugin($vardir));
 
