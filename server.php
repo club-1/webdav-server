@@ -79,7 +79,9 @@ $server->addPlugin(new DAV\Browser\Plugin());
 $server->addPlugin(new DAV\Locks\Plugin($lockBackend));
 
 // Automatically guess (some) contenttypes, based on extension
-$server->addPlugin(new DAV\Browser\GuessContentType());
+$mimePlugin = new DAV\Browser\GuessContentType();
+$mimePlugin->extensionMap["mp4"] = "video/mp4";
+$server->addPlugin($mimePlugin);
 
 // Add Posix properties to files
 $server->addPlugin(new PosixPropertiesPlugin());
