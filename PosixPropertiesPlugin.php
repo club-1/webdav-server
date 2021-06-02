@@ -9,16 +9,60 @@ class PosixPropertiesPlugin extends ServerPlugin
 {
     const NS_POSIXPROPS = 'http://club1.fr/posixprops/';
 
-    public function initialize(Server $server)
+    protected string $realRoot;
+    protected string $dummyRoot;
+    protected array $ids;
+
+    public function __construct(string $realRoot, string $dummyRoot, array $ids = [])
+    {
+        $this->realRoot = $realRoot;
+        $this->dummyRoot = $dummyRoot;
+        $this->ids = $ids;
+    }
+
+    protected function id2name(int $id): string
+    {
+        if (isset($this->ids[$id])) {
+            return $this->ids[$id];
+        }
+        if (!function_exists(('posix_getpwuid'))) {
+            throw new RuntimeException("Missing PHP Posix extension");
+        }
+        $user = posix_getpwuid($id);
+        if (!$user) {
+            return "";
+        }
+        $this->ids[$id] = $user['name'];
+        return $user['name'];
+    }
+
+    public function getName(): string
+    {
+        return 'posix';
+    }
+
+    public function initialize(Server $server): void
     {
         $server->on('propFind', [$this, 'propFind']);
         $server->xml->namespaceMap[self::NS_POSIXPROPS] = 'p';
     }
-    public function propFind(PropFind $propFind, INode $node)
+
+    public function propFind(PropFind $propFind, INode $node): void
     {
+        $path = $propFind->getPath();
+        $path = substr_replace($path, $this->realRoot, 0, strlen($this->dummyRoot));
+        $stat = stat($path);
+        if (!$stat) {
+            return;
+        }
         $ns = '{' . self::NS_POSIXPROPS . '}';
-        // Hide all the things!
-        $propFind->set($ns . 'links', '1');
-        $propFind->set($ns . 'test', '1');
+        $propFind->set($ns . 'mode', $stat['mode']);
+        $propFind->set($ns . 'user', $this->id2name($stat['uid']));
+        $propFind->set($ns . 'group', $this->id2name($stat['uid']));
+        $propFind->set($ns . 'atime', $stat['atime']);
+        $propFind->set($ns . 'ctime', $stat['ctime']);
+        if (is_link($path)) {
+            $propFind->set($ns . 'link', readlink($path));
+        }
     }
 }
