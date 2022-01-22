@@ -11,5 +11,11 @@
             "name": "Nicolas Peugnet",
             "email": "n.peugnet@free.fr"
         }
-    ]
+    ],
+    "config": {
+        "preferred-install": {
+            "sabre/dav": "source",
+            "*": "dist"
+        }
+    }
 }
