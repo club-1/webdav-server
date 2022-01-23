@@ -40,9 +40,12 @@ $tree = [
     new CalDAV\Principal\Collection($principalBackend),
     new CalDAV\CalendarRoot($principalBackend, $calendarBackend),
     new CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
-    // Empty files collection as it is served by fileserver.php
-    new DAV\SimpleCollection('files'),
 ];
+
+if ($user != $anonymous) {
+    // Empty files collection as it is served by fileserver.php
+    array_push($tree, new DAV\SimpleCollection('files'));
+}
 
 $server = new DAV\Server($tree);
 $server->setBaseUri('/');
