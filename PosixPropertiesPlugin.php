@@ -50,6 +50,9 @@ class PosixPropertiesPlugin extends ServerPlugin
     public function propFind(PropFind $propFind, INode $node): void
     {
         $path = $propFind->getPath();
+        if (strpos($path, $this->dummyRoot) !== 0) {
+            return;
+        }
         $path = substr_replace($path, $this->realRoot, 0, strlen($this->dummyRoot));
         $stat = stat($path);
         if (!$stat) {
