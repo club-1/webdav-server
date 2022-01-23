@@ -17,6 +17,7 @@ if (!is_dir($home)) {
 }
 date_default_timezone_set('Europe/Paris');
 $tmpDir = "$home/var/tmp";
+mkdir($tmpDir, 0775, true);
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
