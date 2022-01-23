@@ -2,6 +2,7 @@
 /sql
 /vendor
 config.php
+dbstring.php
 
 # IDE files
 /.vscode

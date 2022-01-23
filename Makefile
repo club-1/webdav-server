@@ -2,13 +2,14 @@
 dbuser  ?= webdav_user
 dbname  ?= webdav
 
+wwwuser := www-data
 pguser  := postgres
 sqldbs  := addressbooks calendars locks principals propertystorage
 srcdir  := vendor/sabre/dav/examples/sql
 srcsql  := $(sqldbs:%=$(srcdir)/pgsql.%.sql)
 destsql := $(srcsql:$(srcdir)/%=sql/%)
 
-all: vendor sql/pgsql.full.sql config.php
+all: sql/pgsql.full.sql config.php dbstring.php | vendor
 
 vendor: composer.lock composer.json
 	composer install
@@ -17,12 +18,14 @@ vendor: composer.lock composer.json
 sql/pgsql.full.sql: $(destsql) | sql
 	cat $^ > $@
 
-$(destsql): sql/%: $(srcdir)/% | sql vendor
+$(destsql): sql/%: $(srcdir)/% | sql
 	sed -E $< \
 	-e 's/(CREATE [A-Z ]+)/\1IF NOT EXISTS /' \
 	-e '/INSERT/,/;$$/d' \
 	-e 's/BYTEA/TEXT/' \
 	> $@
+
+$(srcdir)/%.sql: | vendor;
 
 sql:
 	mkdir $@
@@ -30,16 +33,23 @@ sql:
 config.php:
 	cp config.sample.php $@
 
+dbstring.php:
+	cp dbstring.sample.php $@
+	chmod 640 $@
+	-chgrp $(wwwuser) $@
+
 setupdb: sql/pgsql.full.sql
 	sudo -u $(pguser) createuser --pwprompt $(dbuser)
 	sudo -u $(pguser) createdb $(dbname) --owner $(dbuser) --encoding UTF8
 	sudo -u $(pguser) psql --host=localhost --user $(dbuser) -f sql/pgsql.full.sql $(dbname)
 
-clean:
+mostlyclean:
 	rm -rf sql
 	rm -rf vendor
 
-cleanall: clean
+clean: mostlyclean
+	@echo -n "Delete config files? [y/N] " && read ans && [ $${ans:-N} = y ]
 	rm -rf config.php
+	rm -rf dbstring.php
 
-.PHONY: all setupdb clean cleanall
+.PHONY: all setupdb mostlyclean clean

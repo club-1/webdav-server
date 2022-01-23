@@ -7,8 +7,8 @@ use Sabre\DAVACL;
 
 require_once 'vendor/autoload.php';
 require_once 'AclPlugin.php';
-require_once 'PosixPropertiesPlugin.php';
 require_once 'config.php';
+require_once 'dbstring.php';
 
 /*************************** Setup ****************************/
 
@@ -20,7 +20,6 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
-$lockBackend = new DAV\Locks\Backend\PDO($pdo);
 $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
 $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $carddavBackend = new CardDAV\Backend\PDO($pdo);
@@ -41,19 +40,9 @@ $tree = [
     new CalDAV\Principal\Collection($principalBackend),
     new CalDAV\CalendarRoot($principalBackend, $calendarBackend),
     new CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
+    // Empty files collection as it is served by fileserver.php
+    new DAV\SimpleCollection('files'),
 ];
-
-if ($user != $anonymous) {
-    if (!file_exists($home)) {
-        throw new RuntimeException("Home does not exist: '$home'", 1);
-    }
-    if (!is_dir($home)) {
-        throw new RuntimeException("Home exists but is not a directory: '$home'", 2);
-    }
-    array_push($tree, new DAV\SimpleCollection('files', [
-        new DAV\FS\Directory($home),
-    ]));
-}
 
 $server = new DAV\Server($tree);
 $server->setBaseUri('/');
@@ -74,22 +63,6 @@ $server->addPlugin(new AclPlugin($anonymous));
 
 // Support for html frontend
 $server->addPlugin(new DAV\Browser\Plugin());
-
-/************************ File Plugins ************************/
-
-// The lock manager is reponsible for making sure users don't overwrite
-// each others changes.
-$server->addPlugin(new DAV\Locks\Plugin($lockBackend));
-
-// Automatically guess (some) contenttypes, based on extension
-$mimePlugin = new DAV\Browser\GuessContentType();
-$mimePlugin->extensionMap["mp4"] = "video/mp4";
-$server->addPlugin($mimePlugin);
-
-// Add Posix properties to files
-$server->addPlugin(new PosixPropertiesPlugin($home, "files/$user"));
-// Temporary file filter
-//$server->addPlugin(new DAV\TemporaryFileFilterPlugin($vardir));
 
 /********************** Calendar Plugins **********************/
 
