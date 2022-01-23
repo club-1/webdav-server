@@ -6,17 +6,11 @@ use Sabre\DAV;
 use Sabre\DAVACL;
 
 require_once 'vendor/autoload.php';
+require_once 'AclPlugin.php';
 require_once 'PosixPropertiesPlugin.php';
 require_once 'config.php';
 
 /*************************** Setup ****************************/
-
-if (!file_exists($home)) {
-    throw new RuntimeException("Home does not exist: '$home'", 1);
-}
-if (!is_dir($home)) {
-    throw new RuntimeException("Home exists but is not a directory: '$home'", 2);
-}
 
 // settings
 date_default_timezone_set('Europe/Paris');
@@ -47,10 +41,19 @@ $tree = [
     new CalDAV\Principal\Collection($principalBackend),
     new CalDAV\CalendarRoot($principalBackend, $calendarBackend),
     new CardDAV\AddressBookRoot($principalBackend, $carddavBackend),
-    new DAV\SimpleCollection('files', [
-        new DAV\FS\Directory($home),
-    ]),
 ];
+
+if ($user != $anonymous) {
+    if (!file_exists($home)) {
+        throw new RuntimeException("Home does not exist: '$home'", 1);
+    }
+    if (!is_dir($home)) {
+        throw new RuntimeException("Home exists but is not a directory: '$home'", 2);
+    }
+    array_push($tree, new DAV\SimpleCollection('files', [
+        new DAV\FS\Directory($home),
+    ]));
+}
 
 $server = new DAV\Server($tree);
 $server->setBaseUri('/');
@@ -67,7 +70,7 @@ $server->addPlugin(new DAV\Sync\Plugin());
 $server->addPlugin(new DAV\Sharing\Plugin());
 
 // Access control list plugin
-$server->addPlugin(new DAVACL\Plugin());
+$server->addPlugin(new AclPlugin($anonymous));
 
 // Support for html frontend
 $server->addPlugin(new DAV\Browser\Plugin());
