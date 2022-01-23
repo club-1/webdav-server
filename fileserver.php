@@ -25,10 +25,12 @@ if (!file_exists($tmpDir)) {
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
 $lockBackend = new DAV\Locks\Backend\File("$tmpDir/locksdb");
 
-$server = new DAV\Server(new DAV\SimpleCollection('files', [
-    new DAV\FS\Directory($home),
-]));
-$server->setBaseUri('/files/');
+$server = new DAV\Server([
+    new DAV\SimpleCollection('files', [
+        new DAV\FS\Directory($home),
+    ]),
+]);
+$server->setBaseUri('/');
 
 /********************** General Plugins ***********************/
 
@@ -53,7 +55,7 @@ $mimePlugin->extensionMap["mp4"] = "video/mp4";
 $server->addPlugin($mimePlugin);
 
 // Add Posix properties to files
-$server->addPlugin(new PosixPropertiesPlugin($home, $user));
+$server->addPlugin(new PosixPropertiesPlugin($home, "files/$user"));
 
 // Temporary file filter to store garbage OS files elsewhere
 $server->addPlugin(new DAV\TemporaryFileFilterPlugin($tmpDir));
