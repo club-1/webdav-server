@@ -21,9 +21,11 @@ if (!file_exists($tmpDir)) {
     mkdir($tmpDir, 0775, true);
 }
 
+$pdo = new PDO("sqlite:$tmpDir/davlocks.sqlite");
+
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
-$lockBackend = new DAV\Locks\Backend\File("$tmpDir/locksdb");
+$lockBackend = new DAV\Locks\Backend\PDO($pdo);
 
 $server = new DAV\Server([
     new DAV\SimpleCollection('files', [
@@ -37,6 +39,10 @@ $server->setBaseUri('/');
 // Auth plugin
 $server->addPlugin(new DAV\Auth\Plugin($authBackend));
 
+// The lock manager is reponsible for making sure users don't overwrite
+// each others changes.
+$server->addPlugin(new DAV\Locks\Plugin($lockBackend));
+
 // WebDAV-Sync plugin
 $server->addPlugin(new DAV\Sync\Plugin());
 
@@ -44,10 +50,6 @@ $server->addPlugin(new DAV\Sync\Plugin());
 $server->addPlugin(new DAV\Browser\Plugin());
 
 /************************ File Plugins ************************/
-
-// The lock manager is reponsible for making sure users don't overwrite
-// each others changes.
-$server->addPlugin(new DAV\Locks\Plugin($lockBackend));
 
 // Automatically guess (some) contenttypes, based on extension
 $mimePlugin = new DAV\Browser\GuessContentType();

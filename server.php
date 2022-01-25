@@ -20,6 +20,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
+$lockBackend = new DAV\Locks\Backend\PDO($pdo);
 $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
 $calendarBackend = new CalDAV\Backend\PDO($pdo);
 $carddavBackend = new CardDAV\Backend\PDO($pdo);
@@ -54,6 +55,10 @@ $server->setBaseUri('/');
 
 // Auth plugin
 $server->addPlugin(new DAV\Auth\Plugin($authBackend));
+
+// The lock manager is reponsible for making sure users don't overwrite
+// each others changes.
+$server->addPlugin(new DAV\Locks\Plugin($lockBackend));
 
 // WebDAV-Sync plugin
 $server->addPlugin(new DAV\Sync\Plugin());
