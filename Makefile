@@ -52,4 +52,7 @@ clean: mostlyclean
 	rm -rf config.php
 	rm -rf dbstring.php
 
-.PHONY: all setupdb mostlyclean clean
+debugfileserver: config.php | vendor
+	php -d xdebug.start_with_request=yes -S localhost:8080 fileserver.php
+
+.PHONY: all setupdb mostlyclean clean debugfileserver
