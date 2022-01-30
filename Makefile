@@ -4,9 +4,10 @@ dbname  ?= webdav
 
 wwwuser := www-data
 pguser  := postgres
-sqldbs  := addressbooks calendars locks principals propertystorage
+cacadbs := addressbooks calendars locks principals
+filedbs := locks propertystorage
 srcdir  := vendor/sabre/dav/examples/sql
-srcsql  := $(sqldbs:%=$(srcdir)/pgsql.%.sql)
+srcsql  := $(cacadbs:%=$(srcdir)/pgsql.%.sql) $(filedbs:%=$(srcdir)/sqlite.%.sql)
 destsql := $(srcsql:$(srcdir)/%=sql/%)
 
 all: sql/pgsql.full.sql config.php dbstring.php | vendor

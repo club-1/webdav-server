@@ -6,6 +6,12 @@ require_once 'vendor/autoload.php';
 require_once 'PosixPropertiesPlugin.php';
 require_once 'config.php';
 
+ob_start();
+require 'sql/sqlite.locks.sql';
+require 'sql/sqlite.propertystorage.sql';
+$sql = ob_get_clean();
+ob_end_clean();
+
 /*************************** Setup ****************************/
 
 // settings
@@ -21,11 +27,13 @@ if (!file_exists($tmpDir)) {
     mkdir($tmpDir, 0775, true);
 }
 
-$pdo = new PDO("sqlite:$tmpDir/davlocks.sqlite");
+$pdo = new PDO("sqlite:$tmpDir/dav.sqlite");
+$pdo->exec($sql);
 
 // Backends
 $authBackend = new DAV\Auth\Backend\Apache(); // Let apache manage the auth.
 $lockBackend = new DAV\Locks\Backend\PDO($pdo);
+$storageBackend = new DAV\PropertyStorage\Backend\PDO($pdo);
 
 $server = new DAV\Server([
     new DAV\SimpleCollection('files', [
@@ -42,6 +50,9 @@ $server->addPlugin(new DAV\Auth\Plugin($authBackend));
 // The lock manager is reponsible for making sure users don't overwrite
 // each others changes.
 $server->addPlugin(new DAV\Locks\Plugin($lockBackend));
+
+// Custom properties storage plugin
+$server->addPlugin(new DAV\PropertyStorage\Plugin($storageBackend));
 
 // WebDAV-Sync plugin
 $server->addPlugin(new DAV\Sync\Plugin());
