@@ -22,7 +22,7 @@ if (!is_dir($home)) {
     throw new RuntimeException("Home exists but is not a directory: '$home'", 2);
 }
 date_default_timezone_set('Europe/Paris');
-$tmpDir = "$home/var/tmp";
+$tmpDir = "$home/.local/share/dav";
 if (!file_exists($tmpDir)) {
     mkdir($tmpDir, 0775, true);
 }
