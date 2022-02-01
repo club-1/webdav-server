@@ -6,20 +6,23 @@ wwwuser := www-data
 pguser  := postgres
 cacadbs := addressbooks calendars locks principals
 filedbs := locks propertystorage
+cacasql := $(cacadbs:%=sql/pgsql.%.sql)
+filesql := $(filedbs:%=sql/sqlite.%.sql)
 srcdir  := vendor/sabre/dav/examples/sql
-srcsql  := $(cacadbs:%=$(srcdir)/pgsql.%.sql) $(filedbs:%=$(srcdir)/sqlite.%.sql)
-destsql := $(srcsql:$(srcdir)/%=sql/%)
 
-all: sql/pgsql.full.sql config.php dbstring.php | vendor
+all: sql/pgsql.full.sql sql/sqlite.full.sql config.php dbstring.php | vendor
 
 vendor: composer.lock composer.json
 	composer install
 	@touch $@
 
-sql/pgsql.full.sql: $(destsql) | sql
+sql/pgsql.full.sql: $(cacasql)
 	cat $^ > $@
 
-$(destsql): sql/%: $(srcdir)/% | sql
+sql/sqlite.full.sql: $(filesql)
+	cat $^ > $@
+
+$(cacasql) $(filesql): sql/%: $(srcdir)/% | sql
 	sed -E $< \
 	-e 's/(CREATE [A-Z ]+)/\1IF NOT EXISTS /' \
 	-e '/INSERT/,/;$$/d' \
