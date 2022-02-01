@@ -2,13 +2,12 @@
 
 use Sabre\DAV;
 
-require_once 'vendor/autoload.php';
-require_once 'PosixPropertiesPlugin.php';
-require_once 'config.php';
+require 'vendor/autoload.php';
+require 'PosixPropertiesPlugin.php';
+require 'config.php';
 
 ob_start();
-require 'sql/sqlite.locks.sql';
-require 'sql/sqlite.propertystorage.sql';
+require 'sql/sqlite.full.sql';
 $sql = ob_get_clean();
 ob_end_clean();
 

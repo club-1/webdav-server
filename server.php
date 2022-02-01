@@ -5,10 +5,10 @@ use Sabre\CardDAV;
 use Sabre\DAV;
 use Sabre\DAVACL;
 
-require_once 'vendor/autoload.php';
-require_once 'AclPlugin.php';
-require_once 'config.php';
-require_once 'dbstring.php';
+require 'vendor/autoload.php';
+require 'AclPlugin.php';
+require 'config.php';
+require 'dbstring.php';
 
 /*************************** Setup ****************************/
 
