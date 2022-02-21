@@ -66,7 +66,7 @@ $mimePlugin->extensionMap["mp4"] = "video/mp4";
 $server->addPlugin($mimePlugin);
 
 // Add Posix properties to files
-$server->addPlugin(new PosixPropertiesPlugin($home, "files/$user"));
+$server->addPlugin(new PosixPropertiesPlugin($home, "files/$user", $ids));
 
 // Temporary file filter to store garbage OS files elsewhere
 $server->addPlugin(new DAV\TemporaryFileFilterPlugin($tmpDir));

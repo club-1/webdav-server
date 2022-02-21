@@ -11,6 +11,7 @@ class PosixPropertiesPlugin extends ServerPlugin
 
     protected string $realRoot;
     protected string $dummyRoot;
+    /** @var array<int,string> $ids Map associating user ids with their username*/
     protected array $ids;
 
     public function __construct(string $realRoot, string $dummyRoot, array $ids = [])
