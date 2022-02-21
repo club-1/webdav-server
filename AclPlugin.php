@@ -2,6 +2,9 @@
 
 use Sabre\DAVACL\Plugin;
 
+/**
+ * An extension of the ACL Plugin provided by Sabre to allow anonymous RO access.
+ */
 class AclPlugin extends Plugin {
 
     protected string $anonymous;

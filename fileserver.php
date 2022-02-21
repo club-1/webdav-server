@@ -3,7 +3,6 @@
 use Sabre\DAV;
 
 require 'vendor/autoload.php';
-require 'PosixPropertiesPlugin.php';
 require 'config.php';
 
 ob_start();

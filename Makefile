@@ -10,6 +10,8 @@ cacasql := $(cacadbs:%=sql/pgsql.%.sql)
 filesql := $(filedbs:%=sql/sqlite.%.sql)
 srcdir  := vendor/sabre/dav/examples/sql
 
+port    := 8081
+
 all: sql/pgsql.full.sql sql/sqlite.full.sql config.php dbstring.php | vendor
 
 vendor: composer.lock composer.json
@@ -57,6 +59,6 @@ clean: mostlyclean
 	rm -rf dbstring.php
 
 debugfileserver: config.php | vendor
-	php -d xdebug.start_with_request=yes -S localhost:8080 fileserver.php
+	php -d xdebug.start_with_request=yes -S localhost:$(port) fileserver.php
 
 .PHONY: all setupdb mostlyclean clean debugfileserver

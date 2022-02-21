@@ -6,7 +6,6 @@ use Sabre\DAV;
 use Sabre\DAVACL;
 
 require 'vendor/autoload.php';
-require 'AclPlugin.php';
 require 'config.php';
 require 'dbstring.php';
 

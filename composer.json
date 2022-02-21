@@ -12,6 +12,11 @@
             "email": "n.peugnet@free.fr"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "": ""
+        }
+    },
     "config": {
         "preferred-install": {
             "sabre/dav": "source",
