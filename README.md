@@ -32,3 +32,9 @@ sudo make setupdb [dbuser=webdav_user] [dbname=webdav] [pguser=postgres]
 
 1. for each user, create a pool based on `fpm-pool.conf`
 2. reload fpm: `sudo systemctl reload php7.4-fpm`
+
+### Get the list of ids to preset
+
+```bash
+getent passwd | awk -F: '($3 >= 1000 && $3 < 2000) { printf "\t%d => \047%s\047,\n", $3, $1 }'
+```
