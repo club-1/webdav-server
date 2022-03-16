@@ -35,7 +35,7 @@ $storageBackend = new DAV\PropertyStorage\Backend\PDO($pdo);
 
 $server = new DAV\Server([
     new DAV\SimpleCollection('files', [
-        new DAV\FS\Directory($home),
+        new DAV\FSExt\Directory($home),
     ]),
 ]);
 $server->setBaseUri('/');
