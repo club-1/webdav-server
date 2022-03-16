@@ -9,4 +9,6 @@ $user = $_SERVER['AUTHENTICATE_UID'];
 /** @var string Current user's home directory. */
 $home = "/home/$user";
 /** @var array<int,string> Map associating user ids with their username*/
-$ids = [];
+$ids = [
+    0 => 'root',
+];

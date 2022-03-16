@@ -58,6 +58,7 @@ clean: mostlyclean
 	rm -rf config.php
 	rm -rf dbstring.php
 
+debugfileserver: export XDEBUG_MODE=debug
 debugfileserver: config.php | vendor
 	php -d xdebug.start_with_request=yes -S localhost:$(port) fileserver.php
 
