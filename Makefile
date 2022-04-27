@@ -59,7 +59,7 @@ clean: mostlyclean
 	rm -rf dbstring.php
 
 debugfileserver: export XDEBUG_MODE=debug
-debugfileserver: config.php | vendor
+debugfileserver: config.php sql/sqlite.full.sql | vendor
 	php -d xdebug.start_with_request=yes -S localhost:$(port) fileserver.php
 
 .PHONY: all setupdb mostlyclean clean debugfileserver
