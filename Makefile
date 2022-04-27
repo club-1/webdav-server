@@ -60,6 +60,6 @@ clean: mostlyclean
 
 debugfileserver: export XDEBUG_MODE=debug
 debugfileserver: config.php sql/sqlite.full.sql | vendor
-	php -d xdebug.start_with_request=yes -S localhost:$(port) fileserver.php
+	SERVER=fileserver.php php -d xdebug.start_with_request=yes -S localhost:$(port) debug.php
 
 .PHONY: all setupdb mostlyclean clean debugfileserver
