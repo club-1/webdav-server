@@ -58,16 +58,16 @@
         },
         {
             "name": "sabre/dav",
-            "version": "4.3.1",
+            "version": "4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/dav.git",
-                "reference": "130abb7017f56e0d99b04eb94b041e000a8e9b39"
+                "reference": "b65362abc926520eda2c57e219f022a6c288069d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/dav/zipball/130abb7017f56e0d99b04eb94b041e000a8e9b39",
-                "reference": "130abb7017f56e0d99b04eb94b041e000a8e9b39",
+                "url": "https://api.github.com/repos/sabre-io/dav/zipball/b65362abc926520eda2c57e219f022a6c288069d",
+                "reference": "b65362abc926520eda2c57e219f022a6c288069d",
                 "shasum": ""
             },
             "require": {
@@ -109,8 +109,8 @@
             "autoload": {
                 "psr-4": {
                     "Sabre\\DAV\\": "lib/DAV/",
-                    "Sabre\\DAVACL\\": "lib/DAVACL/",
                     "Sabre\\CalDAV\\": "lib/CalDAV/",
+                    "Sabre\\DAVACL\\": "lib/DAVACL/",
                     "Sabre\\CardDAV\\": "lib/CardDAV/"
                 }
             },
@@ -135,12 +135,7 @@
                 "framework",
                 "iCalendar"
             ],
-            "support": {
-                "forum": "https://groups.google.com/group/sabredav-discuss",
-                "issues": "https://github.com/sabre-io/dav/issues",
-                "source": "https://github.com/fruux/sabre-dav"
-            },
-            "time": "2022-01-20T13:59:29+00:00"
+            "time": "2022-06-27T09:07:55+00:00"
         },
         {
             "name": "sabre/event",
@@ -210,16 +205,16 @@
         },
         {
             "name": "sabre/http",
-            "version": "5.1.3",
+            "version": "5.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/http.git",
-                "reference": "315f592adfcba8aeb73c2fd64285205747acbbd7"
+                "reference": "84a83642c3b877da9d0e265fba7258157c0bdc37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/http/zipball/315f592adfcba8aeb73c2fd64285205747acbbd7",
-                "reference": "315f592adfcba8aeb73c2fd64285205747acbbd7",
+                "url": "https://api.github.com/repos/sabre-io/http/zipball/84a83642c3b877da9d0e265fba7258157c0bdc37",
+                "reference": "84a83642c3b877da9d0e265fba7258157c0bdc37",
                 "shasum": ""
             },
             "require": {
@@ -264,12 +259,7 @@
             "keywords": [
                 "http"
             ],
-            "support": {
-                "forum": "https://groups.google.com/group/sabredav-discuss",
-                "issues": "https://github.com/sabre-io/http/issues",
-                "source": "https://github.com/fruux/sabre-http"
-            },
-            "time": "2021-11-04T07:02:36+00:00"
+            "time": "2022-06-24T08:39:23+00:00"
         },
         {
             "name": "sabre/uri",
@@ -330,16 +320,16 @@
         },
         {
             "name": "sabre/vobject",
-            "version": "4.4.0",
+            "version": "4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/vobject.git",
-                "reference": "0a2e27c797ec0934f376764e1a16567bbbcece0b"
+                "reference": "b8a44ea1610d9b7012e42a7ff6f1cb66f0b757dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/0a2e27c797ec0934f376764e1a16567bbbcece0b",
-                "reference": "0a2e27c797ec0934f376764e1a16567bbbcece0b",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/b8a44ea1610d9b7012e42a7ff6f1cb66f0b757dd",
+                "reference": "b8a44ea1610d9b7012e42a7ff6f1cb66f0b757dd",
                 "shasum": ""
             },
             "require": {
@@ -425,12 +415,7 @@
                 "xCal",
                 "xCard"
             ],
-            "support": {
-                "forum": "https://groups.google.com/group/sabredav-discuss",
-                "issues": "https://github.com/sabre-io/vobject/issues",
-                "source": "https://github.com/fruux/sabre-vobject"
-            },
-            "time": "2021-11-16T09:25:03+00:00"
+            "time": "2022-06-24T11:36:21+00:00"
         },
         {
             "name": "sabre/xml",
@@ -510,5 +495,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "1.1.0"
 }
