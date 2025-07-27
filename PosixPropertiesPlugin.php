@@ -1,5 +1,7 @@
 <?php
 
+namespace Club1\WebdavServer;
+
 use Sabre\DAV\INode;
 use Sabre\DAV\PropFind;
 use Sabre\DAV\Server;
@@ -9,15 +11,11 @@ class PosixPropertiesPlugin extends ServerPlugin
 {
     const NS_POSIXPROPS = 'http://club1.fr/posixprops/';
 
-    protected string $realRoot;
-    protected string $dummyRoot;
     /** @var array<int,string> $ids Map associating user ids with their username*/
     protected array $ids;
 
-    public function __construct(string $realRoot, string $dummyRoot, array $ids = [])
+    public function __construct(array $ids = [])
     {
-        $this->realRoot = $realRoot;
-        $this->dummyRoot = $dummyRoot;
         $this->ids = $ids;
     }
 
@@ -27,7 +25,7 @@ class PosixPropertiesPlugin extends ServerPlugin
             return $this->ids[$id];
         }
         if (!function_exists(('posix_getpwuid'))) {
-            throw new RuntimeException("Missing PHP Posix extension");
+            throw new \RuntimeException("Missing PHP Posix extension");
         }
         $user = posix_getpwuid($id);
         if (!$user) {
@@ -50,11 +48,10 @@ class PosixPropertiesPlugin extends ServerPlugin
 
     public function propFind(PropFind $propFind, INode $node): void
     {
-        $path = $propFind->getPath();
-        if (strpos($path, $this->dummyRoot) !== 0) {
+        if (!($node instanceof IGetPath)) {
             return;
         }
-        $path = substr_replace($path, $this->realRoot, 0, strlen($this->dummyRoot));
+        $path = $node->getPath();
         $stat = stat($path);
         if (!$stat) {
             return;

@@ -1,5 +1,8 @@
 <?php
 
+namespace Club1\WebdavServer;
+
+use PDO;
 use Sabre\CalDAV;
 use Sabre\CardDAV;
 use Sabre\DAV;

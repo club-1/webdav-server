@@ -1,5 +1,7 @@
 <?php
 
+namespace Club1\WebdavServer;
+
 use Sabre\DAVACL\Plugin;
 
 /**

@@ -1,5 +1,7 @@
 <?php
 
+namespace Club1\WebdavServer;
+
 use Sabre\DAV;
 
 require 'vendor/autoload.php';
@@ -14,10 +16,10 @@ ob_end_clean();
 
 // settings
 if (!file_exists($home)) {
-    throw new RuntimeException("Home does not exist: '$home'", 1);
+    throw new \RuntimeException("Home does not exist: '$home'", 1);
 }
 if (!is_dir($home)) {
-    throw new RuntimeException("Home exists but is not a directory: '$home'", 2);
+    throw new \RuntimeException("Home exists but is not a directory: '$home'", 2);
 }
 date_default_timezone_set('Europe/Paris');
 $tmpDir = "$home/.local/share/dav";
@@ -25,7 +27,7 @@ if (!file_exists($tmpDir)) {
     mkdir($tmpDir, 0775, true);
 }
 
-$pdo = new PDO("sqlite:$tmpDir/dav.sqlite");
+$pdo = new \PDO("sqlite:$tmpDir/dav.sqlite");
 $pdo->exec($sql);
 
 // Backends
@@ -35,7 +37,7 @@ $storageBackend = new DAV\PropertyStorage\Backend\PDO($pdo);
 
 $server = new DAV\Server([
     new DAV\SimpleCollection('files', [
-        new DAV\FSExt\Directory($home),
+        new Directory($home),
     ]),
 ]);
 $server->setBaseUri('/');
@@ -66,7 +68,7 @@ $mimePlugin->extensionMap["mp4"] = "video/mp4";
 $server->addPlugin($mimePlugin);
 
 // Add Posix properties to files
-$server->addPlugin(new PosixPropertiesPlugin($home, "files/$user", $ids));
+$server->addPlugin(new PosixPropertiesPlugin($ids));
 
 // Temporary file filter to store garbage OS files elsewhere
 $server->addPlugin(new DAV\TemporaryFileFilterPlugin($tmpDir));
